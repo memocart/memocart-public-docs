@@ -19,6 +19,11 @@ jobs:
       - name: Setup Bun
         uses: oven-sh/setup-bun@v2
 
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "26.3.0"
+
       - name: Install
         run: bun install --frozen-lockfile
 

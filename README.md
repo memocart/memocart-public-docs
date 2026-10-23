@@ -9,6 +9,7 @@ O conteúdo em português fica na raiz. A versão em inglês fica em `/en/`.
 ## Requisitos
 
 - [Bun](https://bun.sh)
+- Node.js 26.3.0. O Astro roda no Node do sistema, e a versão mínima está em `package.json` (`engines.node`). O `mise.toml` e o CI instalam 26.3.0.
 - [mise](https://mise.jdx.dev) (opcional; as mesmas tarefas estão no `package.json`)
 
 ## Rodar
