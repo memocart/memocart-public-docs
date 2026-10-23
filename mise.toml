@@ -1,0 +1,19 @@
+[tools]
+node = "26.3.0"
+bun = "1"
+
+[tasks.dev]
+description = "Sobe o site em http://localhost:4321"
+run = "bun run dev"
+
+[tasks.build]
+description = "Gera o site estático em ./dist"
+run = "bun run build"
+
+[tasks."sync:openapi"]
+description = "Baixa o OpenAPI de api.memocart.link para openapi/openapi.json"
+run = "bun run sync:openapi"
+
+[tasks.deploy]
+description = "Publica o Worker memocart-docs com bunx wrangler deploy"
+run = "bunx wrangler deploy"

@@ -1,0 +1,1981 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "MemoCart API",
+    "description": "Sync da extensão, link público de coleção e leituras do painel admin.",
+    "license": {
+      "name": "MIT",
+      "identifier": "MIT"
+    },
+    "version": "0.1.0"
+  },
+  "servers": [
+    {
+      "url": "https://api.memocart.link"
+    }
+  ],
+  "paths": {
+    "/admin/api/overview": {
+      "get": {
+        "tags": [
+          "admin"
+        ],
+        "summary": "Totais do D1.",
+        "operationId": "overview",
+        "responses": {
+          "200": {
+            "description": "Totais",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AdminOverview"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Não autorizado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Token válido sem role admin",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "clerk": []
+          }
+        ]
+      }
+    },
+    "/admin/api/owners": {
+      "get": {
+        "tags": [
+          "admin"
+        ],
+        "summary": "Donos e as contagens de cada um.",
+        "operationId": "admin_owners",
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Padrão 20, teto 100.",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 0
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "description": "Padrão 0, máximo 10000.",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 0
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Página de donos",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OwnersResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "`limit` ou `offset` inválido",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Não autorizado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Token válido sem role admin",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "clerk": []
+          }
+        ]
+      }
+    },
+    "/admin/api/owners/{owner_id}": {
+      "get": {
+        "tags": [
+          "admin"
+        ],
+        "summary": "Um dono.",
+        "operationId": "owner",
+        "parameters": [
+          {
+            "name": "owner_id",
+            "in": "path",
+            "description": "Id do dono (`sub` do Clerk).",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Dono",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AdminOwner"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Não autorizado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Token válido sem role admin",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Dono não encontrado ou id inválido",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "clerk": []
+          }
+        ]
+      }
+    },
+    "/admin/api/owners/{owner_id}/activity": {
+      "get": {
+        "tags": [
+          "admin"
+        ],
+        "summary": "Atividade recente de sync de um dono.",
+        "operationId": "activity",
+        "parameters": [
+          {
+            "name": "owner_id",
+            "in": "path",
+            "description": "Id do dono (`sub` do Clerk).",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Padrão 20, teto 100.",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 0
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "description": "Padrão 0, máximo 10000.",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 0
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Página de atividade",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ActivityResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "`limit` ou `offset` inválido",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Não autorizado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Token válido sem role admin",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Id de dono inválido",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "clerk": []
+          }
+        ]
+      }
+    },
+    "/admin/api/owners/{owner_id}/collections": {
+      "get": {
+        "tags": [
+          "admin"
+        ],
+        "summary": "Coleções sincronizadas de um dono.",
+        "operationId": "collections",
+        "parameters": [
+          {
+            "name": "owner_id",
+            "in": "path",
+            "description": "Id do dono (`sub` do Clerk).",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Padrão 20, teto 100.",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 0
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "description": "Padrão 0, máximo 10000.",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 0
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Página de coleções",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CollectionsResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "`limit` ou `offset` inválido",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Não autorizado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Token válido sem role admin",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Id de dono inválido",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "clerk": []
+          }
+        ]
+      }
+    },
+    "/admin/api/owners/{owner_id}/products": {
+      "get": {
+        "tags": [
+          "admin"
+        ],
+        "summary": "Produtos sincronizados de um dono.",
+        "operationId": "products",
+        "parameters": [
+          {
+            "name": "owner_id",
+            "in": "path",
+            "description": "Id do dono (`sub` do Clerk).",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Padrão 20, teto 100.",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 0
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "description": "Padrão 0, máximo 10000.",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 0
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Página de produtos",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProductsResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "`limit` ou `offset` inválido",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Não autorizado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Token válido sem role admin",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Id de dono inválido",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "clerk": []
+          }
+        ]
+      }
+    },
+    "/admin/api/shares": {
+      "get": {
+        "tags": [
+          "admin"
+        ],
+        "summary": "Pontes de compartilhamento.",
+        "operationId": "admin_shares",
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Padrão 20, teto 100.",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 0
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "description": "Padrão 0, máximo 10000.",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 0
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Página de shares",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SharesResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "`limit` ou `offset` inválido",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Não autorizado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Token válido sem role admin",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "clerk": []
+          }
+        ]
+      }
+    },
+    "/health": {
+      "get": {
+        "tags": [
+          "health"
+        ],
+        "summary": "Healthcheck público.",
+        "operationId": "health",
+        "responses": {
+          "200": {
+            "description": "Serviço no ar",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HealthResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/openapi.json": {
+      "get": {
+        "tags": [
+          "meta"
+        ],
+        "summary": "Documento OpenAPI 3.1.",
+        "operationId": "spec",
+        "responses": {
+          "200": {
+            "description": "Documento OpenAPI 3.1 em JSON."
+          }
+        }
+      }
+    },
+    "/s/{slug}": {
+      "get": {
+        "tags": [
+          "share"
+        ],
+        "summary": "Carrinho público de um slug.",
+        "operationId": "open",
+        "parameters": [
+          {
+            "name": "slug",
+            "in": "path",
+            "description": "Slug do link público.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Carrinho e itens",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CartDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Slug desconhecido ou link revogado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/sync/collections/{uuid}/share": {
+      "post": {
+        "tags": [
+          "share"
+        ],
+        "summary": "Cria ou reaproveita o link público de uma coleção.",
+        "operationId": "create",
+        "parameters": [
+          {
+            "name": "uuid",
+            "in": "path",
+            "description": "UUID da coleção sincronizada.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Link reaproveitado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SyncShareResponse"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "Link novo",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SyncShareResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Coleção sem itens com link http(s)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Não autorizado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Coleção não encontrada para o dono",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "clerk": []
+          }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "share"
+        ],
+        "summary": "Revoga o link público de uma coleção.",
+        "operationId": "revoke",
+        "parameters": [
+          {
+            "name": "uuid",
+            "in": "path",
+            "description": "UUID da coleção sincronizada.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Revogado, ou não havia link."
+          },
+          "401": {
+            "description": "Não autorizado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Coleção não é do dono",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "clerk": []
+          }
+        ]
+      }
+    },
+    "/sync/pull": {
+      "get": {
+        "tags": [
+          "sync"
+        ],
+        "summary": "Página de mudanças depois do cursor.",
+        "operationId": "pull",
+        "parameters": [
+          {
+            "name": "since",
+            "in": "query",
+            "description": "Cursor exclusivo. Padrão 0.",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "1..=500. Padrão 200. Acima de 500 vira 500.",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 0
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Página de sync",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SyncPage"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "`since` ou `limit` inválido",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Não autorizado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "clerk": []
+          }
+        ]
+      }
+    },
+    "/sync/push": {
+      "post": {
+        "tags": [
+          "sync"
+        ],
+        "summary": "Grava um lote de sync.",
+        "operationId": "push",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SyncPushRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Lote aplicado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SyncApplied"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "JSON ou linha inválida",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Não autorizado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Mais de 500 linhas ou 1 MiB",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "clerk": []
+          }
+        ]
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "ActivityResponse": {
+        "type": "object",
+        "description": "Página de `GET /admin/api/owners/{owner_id}/activity`.",
+        "required": [
+          "records",
+          "limit",
+          "offset",
+          "total"
+        ],
+        "properties": {
+          "limit": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "offset": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "records": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AdminActivity"
+            }
+          },
+          "total": {
+            "type": "integer",
+            "format": "int64"
+          }
+        }
+      },
+      "AdminActivity": {
+        "type": "object",
+        "description": "Linha recente de qualquer tabela de sync.",
+        "required": [
+          "table",
+          "uuid",
+          "updated_at",
+          "seq"
+        ],
+        "properties": {
+          "deleted_at": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "format": "int64"
+          },
+          "seq": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "summary": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "table": {
+            "type": "string"
+          },
+          "updated_at": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "uuid": {
+            "type": "string"
+          }
+        }
+      },
+      "AdminCollection": {
+        "type": "object",
+        "description": "Coleção sincronizada e quantos itens vivos ela tem.",
+        "required": [
+          "uuid",
+          "items",
+          "updated_at",
+          "seq"
+        ],
+        "properties": {
+          "deleted_at": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "format": "int64"
+          },
+          "items": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "kind": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "name": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "seq": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "share_slug": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "store": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "updated_at": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "uuid": {
+            "type": "string"
+          }
+        }
+      },
+      "AdminOverview": {
+        "type": "object",
+        "description": "Totais do D1, sem o subject reservado `__guest__`.\n\n`products`, `collections` e `collection_items` contam linhas vivas\n(`deleted_at` nulo). `shares` conta a ponte `sync_collection_shares`.\n`last_sync_at` é o maior `updated_at` (Unix ms do cliente), tombstone incluído.",
+        "required": [
+          "owners",
+          "products",
+          "collections",
+          "collection_items",
+          "shares"
+        ],
+        "properties": {
+          "collection_items": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "collections": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "last_sync_at": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "format": "int64"
+          },
+          "owners": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "products": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "shares": {
+            "type": "integer",
+            "format": "int64"
+          }
+        }
+      },
+      "AdminOwner": {
+        "type": "object",
+        "description": "Um dono e as contagens das linhas dele.",
+        "required": [
+          "owner_id",
+          "products",
+          "collections",
+          "collection_items",
+          "shares"
+        ],
+        "properties": {
+          "collection_items": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "collections": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "last_sync_at": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "format": "int64"
+          },
+          "owner_id": {
+            "type": "string"
+          },
+          "products": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "shares": {
+            "type": "integer",
+            "format": "int64"
+          }
+        }
+      },
+      "AdminProduct": {
+        "type": "object",
+        "description": "Produto sincronizado, tombstone incluído (`deleted_at` preenchido).",
+        "required": [
+          "uuid",
+          "updated_at",
+          "seq"
+        ],
+        "properties": {
+          "canonical_url": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "currency": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "deleted_at": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "format": "int64"
+          },
+          "domain": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "latest_price": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "format": "int64"
+          },
+          "seq": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "store_name": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "title": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "updated_at": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "uuid": {
+            "type": "string"
+          }
+        }
+      },
+      "AdminShare": {
+        "type": "object",
+        "description": "Ponte de compartilhamento e o retrato público, se o slug ainda existir.\n\n`active` é verdadeiro quando `share_links` ainda aponta para o carrinho.\nRevogar apaga o link e deixa esta linha.",
+        "required": [
+          "owner_id",
+          "collection_uuid",
+          "slug",
+          "project_id",
+          "cart_id",
+          "created_at",
+          "shared_items",
+          "active"
+        ],
+        "properties": {
+          "active": {
+            "type": "boolean",
+            "description": "O D1 devolve 0/1. O JSON da API usa `true`/`false`."
+          },
+          "cart_id": {
+            "type": "string"
+          },
+          "cart_title": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "collection_name": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "collection_uuid": {
+            "type": "string"
+          },
+          "created_at": {
+            "type": "string"
+          },
+          "owner_id": {
+            "type": "string"
+          },
+          "project_id": {
+            "type": "string"
+          },
+          "shared_items": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "slug": {
+            "type": "string"
+          }
+        }
+      },
+      "Cart": {
+        "type": "object",
+        "required": [
+          "id",
+          "project_id",
+          "title"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "project_id": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          }
+        }
+      },
+      "CartDetails": {
+        "type": "object",
+        "description": "Carrinho público de `GET /s/:slug`. Sem dono e sem token de claim.",
+        "required": [
+          "cart",
+          "items"
+        ],
+        "properties": {
+          "cart": {
+            "$ref": "#/components/schemas/Cart"
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Item"
+            }
+          }
+        }
+      },
+      "CollectionKind": {
+        "type": "string",
+        "description": "Tipo de coleção da extensão. Os valores são os da coluna `collections.kind`.",
+        "enum": [
+          "collection",
+          "cart",
+          "memocart"
+        ]
+      },
+      "CollectionsResponse": {
+        "type": "object",
+        "description": "Página de `GET /admin/api/owners/{owner_id}/collections`.",
+        "required": [
+          "collections",
+          "limit",
+          "offset",
+          "total"
+        ],
+        "properties": {
+          "collections": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AdminCollection"
+            }
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "offset": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "total": {
+            "type": "integer",
+            "format": "int64"
+          }
+        }
+      },
+      "ErrorResponse": {
+        "type": "object",
+        "description": "Erro JSON das rotas HTTP.",
+        "required": [
+          "error"
+        ],
+        "properties": {
+          "error": {
+            "type": "string"
+          }
+        }
+      },
+      "HealthResponse": {
+        "type": "object",
+        "description": "`GET /health`.",
+        "required": [
+          "status"
+        ],
+        "properties": {
+          "status": {
+            "type": "string"
+          }
+        }
+      },
+      "Item": {
+        "type": "object",
+        "required": [
+          "id",
+          "cart_id",
+          "title",
+          "status",
+          "buy_url"
+        ],
+        "properties": {
+          "buy_url": {
+            "type": "string"
+          },
+          "cart_id": {
+            "type": "string"
+          },
+          "id": {
+            "type": "string"
+          },
+          "notes": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "photo_key": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "price_cents": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "format": "int64"
+          },
+          "room": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "status": {
+            "$ref": "#/components/schemas/ItemStatus"
+          },
+          "title": {
+            "type": "string"
+          },
+          "why": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        }
+      },
+      "ItemStatus": {
+        "type": "string",
+        "description": "Estado simples de um item do carrinho.\n\nNa API os valores são `interessado`, `comprado` e `pulado`.\nItem novo sem status explícito começa como `interessado`.",
+        "enum": [
+          "interessado",
+          "comprado",
+          "pulado"
+        ]
+      },
+      "OwnersResponse": {
+        "type": "object",
+        "description": "Página de `GET /admin/api/owners`.",
+        "required": [
+          "owners",
+          "limit",
+          "offset",
+          "total"
+        ],
+        "properties": {
+          "limit": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "offset": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "owners": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AdminOwner"
+            }
+          },
+          "total": {
+            "type": "integer",
+            "format": "int64"
+          }
+        }
+      },
+      "ProductsResponse": {
+        "type": "object",
+        "description": "Página de `GET /admin/api/owners/{owner_id}/products`.",
+        "required": [
+          "products",
+          "limit",
+          "offset",
+          "total"
+        ],
+        "properties": {
+          "limit": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "offset": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "products": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AdminProduct"
+            }
+          },
+          "total": {
+            "type": "integer",
+            "format": "int64"
+          }
+        }
+      },
+      "SharesResponse": {
+        "type": "object",
+        "description": "Página de `GET /admin/api/shares`.",
+        "required": [
+          "shares",
+          "limit",
+          "offset",
+          "total"
+        ],
+        "properties": {
+          "limit": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "offset": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "shares": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AdminShare"
+            }
+          },
+          "total": {
+            "type": "integer",
+            "format": "int64"
+          }
+        }
+      },
+      "SyncApplied": {
+        "type": "object",
+        "description": "Resultado de um push gravado.",
+        "required": [
+          "applied",
+          "ignored",
+          "cursor"
+        ],
+        "properties": {
+          "applied": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "cursor": {
+            "type": "integer",
+            "format": "int64",
+            "description": "Maior `seq` do dono depois do push."
+          },
+          "ignored": {
+            "type": "integer",
+            "minimum": 0
+          }
+        }
+      },
+      "SyncChanges": {
+        "type": "object",
+        "description": "Lote de push ou página de pull, com as quatro tabelas da extensão.",
+        "properties": {
+          "collection_items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SyncCollectionItem"
+            }
+          },
+          "collections": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SyncCollection"
+            }
+          },
+          "price_history": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SyncPriceHistory"
+            }
+          },
+          "products": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SyncProduct"
+            }
+          }
+        }
+      },
+      "SyncCollection": {
+        "type": "object",
+        "required": [
+          "uuid",
+          "updated_at"
+        ],
+        "properties": {
+          "created_at": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "deleted_at": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "format": "int64"
+          },
+          "import_complete": {
+            "type": [
+              "boolean",
+              "null"
+            ]
+          },
+          "kind": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/CollectionKind"
+              }
+            ]
+          },
+          "name": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "seq": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "store": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "synced_at": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "updated_at": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "uuid": {
+            "type": "string"
+          }
+        }
+      },
+      "SyncCollectionItem": {
+        "type": "object",
+        "required": [
+          "uuid",
+          "updated_at"
+        ],
+        "properties": {
+          "added_at": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "collection_uuid": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "deleted_at": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "format": "int64"
+          },
+          "note": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "product_uuid": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "quantity": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "format": "int64"
+          },
+          "seq": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "updated_at": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "uuid": {
+            "type": "string"
+          },
+          "variation": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        }
+      },
+      "SyncPage": {
+        "type": "object",
+        "required": [
+          "changes",
+          "cursor",
+          "has_more"
+        ],
+        "properties": {
+          "changes": {
+            "$ref": "#/components/schemas/SyncChanges"
+          },
+          "cursor": {
+            "type": "integer",
+            "format": "int64",
+            "description": "Mande de volta em `since` no próximo pull."
+          },
+          "has_more": {
+            "type": "boolean"
+          }
+        }
+      },
+      "SyncPriceHistory": {
+        "type": "object",
+        "required": [
+          "uuid",
+          "updated_at"
+        ],
+        "properties": {
+          "captured_at": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "currency": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "deleted_at": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "format": "int64"
+          },
+          "original_price": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "format": "int64"
+          },
+          "price": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "format": "int64",
+            "description": "Centavos."
+          },
+          "product_uuid": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "seq": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "updated_at": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "uuid": {
+            "type": "string"
+          }
+        }
+      },
+      "SyncProduct": {
+        "type": "object",
+        "required": [
+          "uuid",
+          "updated_at"
+        ],
+        "properties": {
+          "availability": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "brand": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "canonical_url": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "currency": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "deleted_at": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "format": "int64"
+          },
+          "description": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "domain": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "extraction_confidence": {
+            "type": [
+              "number",
+              "null"
+            ],
+            "format": "double"
+          },
+          "extraction_method": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "favicon_url": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "first_saved_at": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "image_url": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "latest_price": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "format": "int64",
+            "description": "Centavos."
+          },
+          "locked": {
+            "type": [
+              "boolean",
+              "null"
+            ]
+          },
+          "original_price": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "format": "int64"
+          },
+          "seq": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "sku": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "source_url": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "store_name": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "title": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "updated_at": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "uuid": {
+            "type": "string"
+          }
+        }
+      },
+      "SyncPushRequest": {
+        "type": "object",
+        "properties": {
+          "changes": {
+            "$ref": "#/components/schemas/SyncChanges"
+          }
+        }
+      },
+      "SyncShareResponse": {
+        "type": "object",
+        "description": "Resposta de `POST /sync/collections/{uuid}/share`.",
+        "required": [
+          "url",
+          "slug",
+          "project_id",
+          "cart",
+          "items",
+          "reused"
+        ],
+        "properties": {
+          "cart": {
+            "$ref": "#/components/schemas/Cart"
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Item"
+            }
+          },
+          "project_id": {
+            "type": "string"
+          },
+          "reused": {
+            "type": "boolean"
+          },
+          "slug": {
+            "type": "string"
+          },
+          "url": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "clerk": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT",
+        "description": "JWT de sessão do Clerk. Header `Authorization: Bearer <token>`."
+      }
+    }
+  },
+  "tags": [
+    {
+      "name": "health",
+      "description": "Healthcheck público."
+    },
+    {
+      "name": "sync",
+      "description": "Push e pull da extensão. Exige o JWT Clerk."
+    },
+    {
+      "name": "share",
+      "description": "Link público de uma coleção. Criar e revogar exigem o JWT Clerk. A leitura por slug é pública."
+    },
+    {
+      "name": "admin",
+      "description": "Leituras do painel. Exige o JWT Clerk com claim `role` = `admin`."
+    },
+    {
+      "name": "meta",
+      "description": "Documento desta API."
+    }
+  ]
+}
