@@ -1,0 +1,54 @@
+@import '@fontsource-variable/inter';
+
+/*
+ * MemoCart Red.
+ * Fundo #0A0A0A, superfície #141414, texto #FFFFFF, vermelho #E11D2E.
+ * Os dois temas do Starlight recebem a mesma paleta escura.
+ */
+:root,
+:root[data-theme='light'] {
+	color-scheme: dark;
+
+	--sl-font: 'Inter Variable', Inter, ui-sans-serif, system-ui, sans-serif;
+	--sl-font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono',
+		'Courier New', monospace;
+
+	--sl-color-white: #ffffff;
+	--sl-color-gray-1: #ffffff;
+	--sl-color-gray-2: #ffffff;
+	--sl-color-gray-3: #c4c4c4;
+	--sl-color-gray-4: #8a8a8a;
+	--sl-color-gray-5: #2a2a2a;
+	--sl-color-gray-6: #141414;
+	--sl-color-gray-7: #141414;
+	--sl-color-black: #0a0a0a;
+
+	--sl-color-text: #ffffff;
+	--sl-color-bg: #0a0a0a;
+	--sl-color-bg-nav: #141414;
+	--sl-color-bg-sidebar: #141414;
+	--sl-color-bg-inline-code: #141414;
+	--sl-color-hairline-light: #2a2a2a;
+	--sl-color-hairline: #2a2a2a;
+	--sl-color-hairline-shade: #0a0a0a;
+
+	--sl-color-accent-low: #3f0a10;
+	--sl-color-accent: #e11d2e;
+	--sl-color-accent-high: #ffc1c6;
+	--sl-color-text-accent: #e11d2e;
+	--sl-color-text-invert: #ffffff;
+	--sl-color-bg-accent: #e11d2e;
+}
+
+/* Botões primários no vermelho da marca, com texto branco. */
+.sl-link-button.primary {
+	background-color: #e11d2e;
+	border-color: #e11d2e;
+	color: #ffffff;
+}
+
+.sl-link-button.primary:hover {
+	background-color: #ff3142;
+	border-color: #ff3142;
+	color: #ffffff;
+}

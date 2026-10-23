@@ -1,0 +1,21 @@
+# build
+dist/
+.astro/
+
+# dependencies
+node_modules/
+
+# wrangler
+.wrangler/
+.dev.vars
+.env
+.env.*
+
+# logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# os
+.DS_Store
